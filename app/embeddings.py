@@ -1,31 +1,30 @@
+"""
+embeddings.py — Lightweight embeddings via Google GenAI SDK
+"""
 from __future__ import annotations
-from functools import lru_cache
-import logging
 
-from langchain_huggingface import HuggingFaceEmbeddings
+import logging
 from app.config import get_settings
 
-logger = logging.getLogger(__name__)
+logger   = logging.getLogger(__name__)
 settings = get_settings()
 
 
-@lru_cache(maxsize=1)
-def get_embeddings() -> HuggingFaceEmbeddings:
-    logger.info(f"Loading HF model: {settings.hf_embedding_model}")
-
-    return HuggingFaceEmbeddings(
-        model_name = settings.hf_embedding_model,
-        model_kwargs = {"device": "cpu"},
-        encode_kwargs = {
-            "normalize_embeddings": True,
-            }
-    )
-
-
 def embed_text(text: str) -> list[float]:
-    """embed a single string -> 382-dim vector"""
-    return get_embeddings().embed_query(text)
+    """Embed a single string using Google Gemini embedding."""
+    try:
+        import google.generativeai as genai
+        genai.configure(api_key=settings.google_api_key)
+        result = genai.embed_content(
+            model   = "models/text-embedding-004",
+            content = text,
+        )
+        return result["embedding"]
+    except Exception as e:
+        logger.error(f"Embedding failed: {e}")
+        return [0.0] * 768
+
 
 def embed_texts(texts: list[str]) -> list[list[float]]:
-    """Batch embed a list a strings -> list of 382-dim vectors."""
-    return get_embeddings().embed_documents(texts)
+    """Batch embed multiple strings."""
+    return [embed_text(t) for t in texts]
