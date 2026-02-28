@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+pydantic-settings
+supabase
+langchain
+langchain-core
+langchain-google-genai
+langchain-groq
+langgraph
+python-docx
+python-multipart
+twilio
+groq
+httpx
