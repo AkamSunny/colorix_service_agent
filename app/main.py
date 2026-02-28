@@ -34,8 +34,8 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     logger.info("🚀 Colorix WhatsApp Agent starting...")
 
-    from app.embeddings import get_embeddings
-    get_embeddings()
+    from app.embeddings import embed_text
+    embed_text("warmup")
     logger.info("✅ Embedding model ready")
 
     from app.database import document_count
