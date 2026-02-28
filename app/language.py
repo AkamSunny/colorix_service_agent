@@ -4,7 +4,6 @@ language.py — Language detection + bilingual prompt templates (EN / FR)
 from __future__ import annotations
 
 import logging
-from langdetect import detect, LangDetectException
 
 logger = logging.getLogger(__name__)
 
